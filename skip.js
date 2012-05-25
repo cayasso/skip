@@ -7,11 +7,11 @@
       Skip = function (element, options) {
 
         // set element
-        this.Skip = element;
+        this.panel = element;
 
         // determine width of each slide
-        this.width = this.Skip.getBoundingClientRect().width || this.Skip.offsetWidth;
-        this.height = this.Skip.getBoundingClientRect().height || this.Skip.offsetHeight;
+        this.width = this.panel.getBoundingClientRect().width || this.panel.offsetWidth;
+        this.height = this.panel.getBoundingClientRect().height || this.panel.offsetHeight;
 
         // return immediately if measurement fails
         if (!this.width) return;
@@ -53,20 +53,20 @@
 
   Skip.prototype.on = function (e) {
     // add event listeners
-    if (this.Skip.addEventListener) {
-      this.Skip.addEventListener(this._eventStart, this, false);
-      this.Skip.addEventListener(this._eventMove, this, false);
-      this.Skip.addEventListener(this._eventEnd, this, false);
+    if (this.panel.addEventListener) {
+      this.panel.addEventListener(this._eventStart, this, false);
+      this.panel.addEventListener(this._eventMove, this, false);
+      this.panel.addEventListener(this._eventEnd, this, false);
       window.addEventListener('resize', this, false);
     }
   };
 
   Skip.prototype.off = function (e) {
     // remove event listeners
-    if (this.Skip.addEventListener) {
-      this.Skip.removeEventListener(this._eventStart, this, false);
-      this.Skip.removeEventListener(this._eventMove, this, false);
-      this.Skip.removeEventListener(this._eventEnd, this, false);
+    if (this.panel.addEventListener) {
+      this.panel.removeEventListener(this._eventStart, this, false);
+      this.panel.removeEventListener(this._eventMove, this, false);
+      this.panel.removeEventListener(this._eventEnd, this, false);
       window.removeEventListener('resize', this, false);
     }
   };
