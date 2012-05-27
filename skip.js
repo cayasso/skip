@@ -112,6 +112,9 @@ var Skip = (function (window, document, undefined) {
 
    Skip.prototype.onTouchMove = function (e) {
 
+    e.preventDefault();
+    e.stopPropagation();
+
     // ensure swiping with one touch and not pinching
     if(this._isTouch && e.touches.length > 1 || e.scale && e.scale !== 1) return;
 
@@ -131,7 +134,7 @@ var Skip = (function (window, document, undefined) {
       else
         this.padding = this.padding - 10;
 
-      $('.content').css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
+      //$('.content').css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
 
     } else {
       if (this.padding > 280)
@@ -139,23 +142,43 @@ var Skip = (function (window, document, undefined) {
       else
         this.padding = this.padding + 10;
 
-      $('.content').css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
+      //.css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
     }
+
+    this.slide($('.content')[0], this.padding, 300);
+
   };
 
-  Skip.prototype.slide = function () {
+  Skip.prototype.slide = function (el, x, speed) {
 
+      if (!el) return;
+
+      var style = el.style;
+
+      // set duration speed to 0
+      style.webkitTransitionDuration =
+      style.MozTransitionDuration =
+      style.msTransitionDuration =
+      style.OTransitionDuration =
+      style.transitionDuration = speed + 'ms';
+
+      style.webkitTransform = 'translate3d(' + x + 'px,0,0)';
+      style.msTransform =
+      style.MozTransform =
+      style.OTransform = 'translateX(' + x + 'px)';
+  };
+
+  Skip.prototype.slideMomentum = function (el, e) {
+    
   };
 
   Skip.prototype.onTouchEnd = function (e) {
-     this.sliding = false;
+    e.preventDefault();
+    e.stopPropagation();
+    this.sliding = false;
   };
 
   Skip.prototype.onTransitionEnd = function () {
-
-  };
-
-  Skip.prototype._move = function () {
 
   };
 

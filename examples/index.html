@@ -37,14 +37,14 @@
         font-weight: normal;
        }
 
-      *, ::after, ::before {
+      /**, ::after, ::before {
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
         -webkit-user-select: none;
         -webkit-touch-callout: none;
         -webkit-user-drag: none;
-      }
+      }*/
 
       .container {
         display: -webkit-box;
@@ -55,7 +55,7 @@
 
       .content {
         width: 100%;
-        display: -webkit-box;
+        /*display: -webkit-box;*/
         z-index: 1;
         background-color: #FFFF22;
         -webkit-transform: translate3d(250px, 0px, 0px); 
@@ -94,7 +94,16 @@
         width:100%;
         position: relative;
       }
+
+      header, footer {
+        height: 35px;
+        width: 100%;
+        background-color: green;
+        display: block;
+      }
       </style>
+
+
 
    </head>
 
@@ -108,9 +117,31 @@
 
         <div class='content'>
           
-          <a href="#" class="back">BACK</a>
+          <header>
+            <a href="#" class="back">BACK</a>
+            This is the header content
+            
+          </header>
 
-          This is the content and only the content
+          <br>
+          <div>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+            <p>This is the content and only the content</p>
+          </div>
+          
+
+          <footer>
+            This is the footer content
+          </footer>
         </div>
   
       </div>
