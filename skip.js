@@ -36,8 +36,8 @@ var Skip = (function (window, document, undefined) {
         this._dirX = 'left';
         this._dirY = 'up';
 
-        this.margin = 250;
-        this._margin = 250;
+        this.padding = 250;
+        this._padding = 250;
 
         // trigger initialization
         this.setup();
@@ -45,7 +45,9 @@ var Skip = (function (window, document, undefined) {
         // bind events
         this.on();
         
-      };
+      },
+
+      onTouchMove;
 
   Skip.prototype.setup = function () {
     
@@ -75,23 +77,40 @@ var Skip = (function (window, document, undefined) {
   Skip.prototype.handleEvent = function(e) {
     switch(e.type) {
       case this._eventStart: this.onTouchStart(e); break;
-      case this._eventMove: this.onTouchMove(e); break;
+      //case this._eventMove: this.onTouchMove(e); break;
       case this._eventEnd: this.onTouchEnd(e); break;
     }
   };
 
   Skip.prototype.onTouchStart = function (e) {
+    var self = this;
+
+    self.sliding = true;
+
     this._start = {
       // get touch coordinates for delta calculations in onTouchMove
-      pageX: e.touches[0].pageX,
-      pageY: e.touches[0].pageY,
+      pageX: this._isTouch ? e.touches[0].pageX : e.pageX,
+      pageY: this._isTouch ? e.touches[0].pageY : e.pageY,
 
       // set initial timestamp of touch sequence
       time: Number( new Date() )
     };
+
+
+    (function loop(){
+
+      if (!self.sliding) return;
+      
+      self.onTouchMove(e);
+      requestAnimFrame(loop);
+
+    })();
+
   };
 
-  Skip.prototype.onTouchMove = function (e) {
+  /*Skip.prototype.onTouchMove = */
+
+   Skip.prototype.onTouchMove = function (e) {
 
     // ensure swiping with one touch and not pinching
     if(this._isTouch && e.touches.length > 1 || e.scale && e.scale !== 1) return;
@@ -107,25 +126,29 @@ var Skip = (function (window, document, undefined) {
 
     if (this._dirX === 'left') {
 
-      if (this.margin < 0)
-        this.margin = 0;
+      if (this.padding < 0)
+        this.padding = 0;
       else
-        this.margin = this.margin - 10;
+        this.padding = this.padding - 10;
 
-      $('.content').css('-webkit-transform', 'translate3d('+ this.margin +'px, 0px, 0px)');
+      $('.content').css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
 
     } else {
-      if (this.margin > 280)
-        this.margin = 250;
+      if (this.padding > 280)
+        this.padding = 250;
       else
-        this.margin = this.margin + 10;
+        this.padding = this.padding + 10;
 
-      $('.content').css('-webkit-transform', 'translate3d('+ this.margin +'px, 0px, 0px)');
+      $('.content').css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
     }
   };
 
-  Skip.prototype.onTouchEnd = function (e) {
+  Skip.prototype.slide = function () {
 
+  };
+
+  Skip.prototype.onTouchEnd = function (e) {
+     this.sliding = false;
   };
 
   Skip.prototype.onTransitionEnd = function () {
@@ -143,6 +166,17 @@ var Skip = (function (window, document, undefined) {
   Skip.prototype._translate = function () {
 
   };
+
+ window.requestAnimFrame = (function(cb) {
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function(cb){ window.setTimeout(cb, 1000 / 60); };
+  })();
+
+    
 
   return Skip;
 
