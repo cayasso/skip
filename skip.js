@@ -50,7 +50,9 @@ var Skip = (function (window, document, undefined) {
       onTouchMove;
 
   Skip.prototype.setup = function () {
-    
+    console.log('HOOOOOLA');
+    this.panel.style.position = 'absolute';
+    this.panel.style.left = 0;
   };
 
   Skip.prototype.on = function (e) {
@@ -83,23 +85,32 @@ var Skip = (function (window, document, undefined) {
   };
 
   Skip.prototype.onTouchStart = function (e) {
+
     var self = this;
 
-    self.sliding = true;
+    self._sliding = true;
+    
+    // get touch coordinates for delta calculations in onTouchMove
+    this._startX = (this._isTouch ? e.touches[0] : e).pageX;
+    this._startY = (this._isTouch ? e.touches[0] : e).pageY;
+    
+    console.log(this.panel);
 
-    this._start = {
-      // get touch coordinates for delta calculations in onTouchMove
-      pageX: this._isTouch ? e.touches[0].pageX : e.pageX,
-      pageY: this._isTouch ? e.touches[0].pageY : e.pageY,
+    this._startLeft = this._left(this.panel);
 
-      // set initial timestamp of touch sequence
-      time: Number( new Date() )
-    };
+    console.log(this._startLeft);
+
+    
+    //this.panel.style.position = '0';
 
 
+    // set initial timestamp of touch sequence
+    this._startTime = Number(new Date());
+
+  
     (function loop(){
 
-      if (!self.sliding) return;
+      if (!self._sliding) return;
       
       self.onTouchMove(e);
       requestAnimFrame(loop);
@@ -108,46 +119,57 @@ var Skip = (function (window, document, undefined) {
 
   };
 
+
+
   /*Skip.prototype.onTouchMove = */
 
    Skip.prototype.onTouchMove = function (e) {
-
+    
+    // prevent default behavior
     e.preventDefault();
     e.stopPropagation();
 
     // ensure swiping with one touch and not pinching
-    if(this._isTouch && e.touches.length > 1 || e.scale && e.scale !== 1) return;
+    if (this._isTouch && e.touches.length > 1 || e.scale && e.scale !== 1) return;
 
     var myX = (this._isTouch ? e.touches[0] : e).pageX;
     var myY = (this._isTouch ? e.touches[0] : e).pageY;
 
-    this._dirX = (myX > this._x) ? 'right' : 'left';
-    //this._dirY = (myY > this._y) ? 'down' : 'up';
+    this._dirX = (this._startX > myX) ? 'left' : 'right';
+    this._dirY = (this._startY > myY) ? 'up' : 'down';
 
-    this._x = myX;
+    
+    var left = '-' + (this._startX - myX - this._startLeft) + 'px';
+
+    console.log(left);
+
+    this.panel.style.left = left;
+
+
+    //'-' + (this._startX - myX - this._startLeft) + 'px';
+
+    //console.log(this._startX, myX, this._startLeft);
+   
+    //this._x = myX;
     //this._y = myY;
 
-    if (this._dirX === 'left') {
+    /*if (this._dirX === 'left') {
 
       if (this.padding < 0)
         this.padding = 0;
       else
         this.padding = this.padding - 10;
-
-      //$('.content').css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
-
     } else {
       if (this.padding > 280)
         this.padding = 250;
       else
         this.padding = this.padding + 10;
+    }*/
 
-      //.css('-webkit-transform', 'translate3d('+ this.padding +'px, 0px, 0px)');
-    }
-
-    this.slide($('.content')[0], this.padding, 300);
-
+    //this.slide($('.content')[0], myX, 300);
+    
   };
+
 
   Skip.prototype.slide = function (el, x, speed) {
 
@@ -168,18 +190,39 @@ var Skip = (function (window, document, undefined) {
       style.OTransform = 'translateX(' + x + 'px)';
   };
 
-  Skip.prototype.slideMomentum = function (el, e) {
-    
+  Skip.prototype.momentum = function (el, e) {
+
   };
 
   Skip.prototype.onTouchEnd = function (e) {
     e.preventDefault();
     e.stopPropagation();
-    this.sliding = false;
+    this._sliding = false;
+
+    //if (touchslider.getLeft(elem) > 0) {
+    if (this._dirX === 'left') {
+      this.slide($('.content')[0], 0, 200);
+    } else {
+      this.slide($('.content')[0], 250, 200);
+    }
+      
+         
+         
   };
 
   Skip.prototype.onTransitionEnd = function () {
 
+  };
+
+  /**
+   * A little helper to parse off the 'px' at the end of the left
+   * CSS attribute and parse it as a number.
+   */
+  Skip.prototype._left = function(el) {
+    
+    console.log('ON START LEFT', el.style);
+
+    return parseInt(el.style.left.substring(0, el.style.left.length - 2), 10);
   };
 
   Skip.prototype._animate = function () {
@@ -199,10 +242,7 @@ var Skip = (function (window, document, undefined) {
             function(cb){ window.setTimeout(cb, 1000 / 60); };
   })();
 
-    
-
   return Skip;
-
 
 }).call(this, window, document);
 

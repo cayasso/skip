@@ -12,12 +12,11 @@
       <meta name="MobileOptimized" content="320" />
       <meta http-equiv="cleartype" content="on" />
 
-      
       <script src="js/jq.mobi.js"></script>
       <script src="js/touch.js"></script>
       <script src="../skip.js"></script>
 
-      
+      <script src="http://192.168.1.102:8585/target/target-script-min.js#skip"></script>
       <style>
 
       * { margin: 0; padding: 0; outline: 0; -webkit-box-sizing: border-box }
@@ -119,7 +118,7 @@
           
           <header>
             <a href="#" class="back">BACK</a>
-            This is the header content
+            This is the eventual header content
             
           </header>
 
@@ -140,13 +139,18 @@
           
 
           <footer>
-            This is the footer content
+            This is the eventual footer
           </footer>
         </div>
   
       </div>
       
       <script>
+
+        $('.back').bind('click', function () {
+          console.log('JUST CLICKED THIS');
+          return false;
+        });
 
         var el = $('.content')[0];
         var myPanel = new Skip(el);
